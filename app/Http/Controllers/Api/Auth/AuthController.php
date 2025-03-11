@@ -10,22 +10,20 @@ use Illuminate\Http\JsonResponse;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Services\AuthService;
+use Illuminate\Database\Capsule\Manager;
 
 class AuthController extends Controller
 {
 
-    // public function index ()
-    // {
-    //     $user = User::all();
-    //     return response()->json($user);
-    // }
-
-    public function __construct(private AuthService $authService) {
+    public function __construct(private AuthService $authService)
+    {
+        $this->authService = $authService;
     }
 
     public function index(UserListRequest $request): JsonResponse
     {
         $users = $this->authService->allUsers();
+
         return response()->json([
             'message' => 'Users retrieved successfully',
             'data' => $users,
@@ -34,10 +32,12 @@ class AuthController extends Controller
 
     public function register(RegisterRequest $request): JsonResponse
     {
-        $this->authService->register($request->validated());
+        $user = $this->authService->register($request->validated());
+
         return response()->json([
-            'message' => 'Successfully registered, please verify your email.'
-        ]);
+            'message' => 'User registered successfully!',
+            'user' => $user,
+        ], 201);
     }
 
     public function login(LoginRequest $request): JsonResponse
@@ -55,5 +55,13 @@ class AuthController extends Controller
         ], 200);
     }
 
-}
+    public function logout(Request $request): JsonResponse
+    {
+        $request->user()->tokens()->delete();
 
+        return response()->json([
+            'status' => true,
+            'message' => 'Logged out successfully',
+        ]);
+    }
+}

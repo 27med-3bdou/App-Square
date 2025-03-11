@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\Api\Auth;
+namespace App\Http\Requests\Api\App;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UserListRequest extends FormRequest
+class ResetPasswordRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,6 +22,9 @@ class UserListRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'email' => 'required|email|exists:users,email',
+            'otp' => 'required|digits:6',
+            'password' => 'required|min:6|confirmed',
         ];
     }
 }

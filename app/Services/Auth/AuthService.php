@@ -4,25 +4,26 @@ namespace App\Services;
 
 use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class AuthService
 {
+    public function allUsers()
+    {
+        return User::all();
+    }
+
     public function register(array $data): ?User
     {
         $user = User::create([
             'name' => $data['name'],
             'email' => $data['email'],
-            'mobile' => $data['phone'],
-            'password' => $data['password'],
+            'mobile' => $data['mobile'],
+            'password' => Hash::make($data['password']),
         ]);
 
         return $user;
-    }
-
-    public function allUsers()
-    {
-        return User::all();
     }
 
     public function login(array $credentials): array
@@ -45,6 +46,14 @@ class AuthService
             'token' => $token,
         ];
     }
+
+    public function logout(User $user): array
+    {
+        $user->tokens()->delete();
+
+        return [
+            'status' => true,
+            'message' => 'Logged out successfully',
+        ];
+    }
 }
-
-

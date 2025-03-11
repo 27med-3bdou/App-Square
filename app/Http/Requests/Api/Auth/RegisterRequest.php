@@ -24,20 +24,22 @@ class RegisterRequest extends FormRequest
         return [
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
-            'mobile' => 'required|unique:users,mobile',
+            'mobile' => 'required|numeric|digits_between:8,15|unique:users,mobile',
             'password' => 'required|min:6|confirmed',
         ];
     }
 
-    // public function messages()
-    // {
-    //     return [
-    //         'name.required' => 'الاسم مطلوب!',
-    //         'email.required' => 'البريد الإلكتروني مطلوب!',
-    //         'email.unique' => 'البريد الإلكتروني مستخدم بالفعل!',
-    //         'mobile.required' => 'رقم الهاتف مطلوب!',
-    //         'password.required' => 'كلمة المرور مطلوبة!',
-    //         'password.confirmed' => 'كلمة المرور غير متطابقة!',
-    //     ];
-    // }
+    public function messages()
+    {
+        return [
+            'username.required' => 'Username is required',
+            'username.string' => 'Username must be string',
+            'username.max' => 'Username max 50 characters',
+            'email.required' => 'Email is required',
+            'email.string' => 'Email must be string',
+            'email.unique' => 'Email already exists',
+            'mobile.required' => 'Mobile is required',
+
+        ];
+    }
 }
